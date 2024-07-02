@@ -369,8 +369,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 961739749}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.000000029802319, y: 0.00000004470348, z: -0.000000009313225, w: 1}
-  m_LocalPosition: {x: -1.0089415, y: 0.26038533, z: -2.77073}
+  m_LocalRotation: {x: -0.16832402, y: -0.0650113, z: -0.01109682, w: 0.983523}
+  m_LocalPosition: {x: -0.53529465, y: -0.2446751, z: -2.3851876}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -437,6 +437,7 @@ GameObject:
   - component: {fileID: 1733838827}
   - component: {fileID: 1733838826}
   - component: {fileID: 1733838825}
+  - component: {fileID: 1733838829}
   m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
@@ -534,6 +535,26 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1733838829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1733838824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1741aec6397ae6c42a5751d04e0aaea9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stencilTexture: {fileID: 2800000, guid: 596ddd5a0d9d8c24d88b412959d10cca, type: 3}
+  paintShader: {fileID: 4800000, guid: ddc216d7cf86ddc46aa4202a61854179, type: 3}
+  paintRadius: 100
+  paintIntensity: 0.3
+  BufferTextures:
+  - {fileID: 0}
+  - {fileID: 0}
+  paintedBoardMaterial: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
