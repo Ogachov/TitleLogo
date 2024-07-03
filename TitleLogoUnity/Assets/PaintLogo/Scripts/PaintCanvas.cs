@@ -7,20 +7,55 @@ public class PaintCanvas : MonoBehaviour
 {
     [SerializeField]Texture2D stencilTexture;
     [SerializeField]Shader paintShader;
+    
+    [SerializeField]Vector3 gravity = new Vector3(0, -9.8f, 0);
 
     [SerializeField]float paintRadius = 10f;
     [SerializeField]float paintIntensity = 1f;
 
-    enum BufferType
+    enum SurfaceType
     {
         Front,
         Back,
-    } 
+    }
     
-    private BufferType sourceBuffer = BufferType.Front;
-    private BufferType destinationBuffer = BufferType.Back;
-    // BufferTypeの配列を定義する
-    public RenderTexture[] BufferTextures = new RenderTexture[System.Enum.GetValues(typeof(BufferType)).Length];
+    enum BufferType
+    {
+        Density,
+        Velocity,
+        Divergence,
+    }
+    
+    private SurfaceType[][] _surface = new SurfaceType[][]
+    {
+        new SurfaceType[] {SurfaceType.Front, SurfaceType.Back},
+        new SurfaceType[] {SurfaceType.Front, SurfaceType.Back},
+        new SurfaceType[] {SurfaceType.Front, SurfaceType.Back},
+    };
+    
+    private RenderTexture[][] _bufferTextures = new RenderTexture[][]
+    {
+        new RenderTexture[] {null, null},
+        new RenderTexture[] {null, null},
+        new RenderTexture[] {null, null},
+    };
+    
+    private readonly Color[] _clearColors = new Color[]
+    {
+        new Color(0, 0, 0, 0),
+        new Color(0.5f, 0.5f, 0.5f, 0.5f),
+        new Color(0.5f, 0.5f, 0.5f, 0.5f),
+    };
+    
+    // private SurfaceType _densitySource = SurfaceType.Front;
+    // private SurfaceType _densityDestination = SurfaceType.Back;
+    // private SurfaceType _velocitySource = SurfaceType.Front;
+    // private SurfaceType _velocityDestination = SurfaceType.Back;
+    // private SurfaceType _divergenceSource = SurfaceType.Front;
+    // private SurfaceType _divergenceDestination = SurfaceType.Back;
+    // public RenderTexture[] DensityTextures = new RenderTexture[System.Enum.GetValues(typeof(SurfaceType)).Length];
+    // public RenderTexture[] VelocityTextures = new RenderTexture[System.Enum.GetValues(typeof(SurfaceType)).Length];
+    // public RenderTexture[] DivergenceTextures = new RenderTexture[System.Enum.GetValues(typeof(SurfaceType)).Length];
     
     private Material paintShaderMaterial;
     private Vector4 stencilTexelSize;
@@ -44,12 +79,33 @@ public class PaintCanvas : MonoBehaviour
             return;
         }
         
-        for (var i = 0; i < BufferTextures.Length; i++)
+        // for (var i = 0; i < DensityTextures.Length; i++)
+        // {
+        //     if (DensityTextures[i] != null)
+        //     {
+        //         DensityTextures[i].Release();
+        //         DensityTextures[i] = null;
+        //     }
+        //     if (VelocityTextures[i] != null)
+        //     {
+        //         VelocityTextures[i].Release();
+        //         VelocityTextures[i] = null;
+        //     }
+        //     if (DivergenceTextures[i] != null)
+        //     {
+        //         DivergenceTextures[i].Release();
+        //         DivergenceTextures[i] = null;
+        //     }
+        // }
+        for (var i = _bufferTextures.Length - 1; i >= 0; i--)
         {
-            if (BufferTextures[i] != null)
+            for (var j = _bufferTextures[i].Length - 1; j >= 0; j--)
             {
-                BufferTextures[i].Release();
-                BufferTextures[i] = null;
+                if (_bufferTextures[i][j] != null)
+                {
+                    _bufferTextures[i][j].Release();
+                    _bufferTextures[i][j] = null;
+                }
             }
         }
         
@@ -66,12 +122,14 @@ public class PaintCanvas : MonoBehaviour
         
         PaintByMouse();
         
-        Blur();
+        // Blur();  // これはこれで面白いが。
+        
+        CalcVelocity();
     }
 
     private void OnGUI()
     {
-        // DrawBufferForDebug();
+        DrawBufferForDebug(BufferType.Velocity);
     }
 
     private void CreateBufferTextures()
@@ -87,29 +145,30 @@ public class PaintCanvas : MonoBehaviour
         
         stencilTexelSize = new Vector4(width, height, 1f / width, 1f / height);
         
-        for (var i = 0; i < Enum.GetValues(typeof(BufferType)).Length; i++)
+        for (var i = 0; i < Enum.GetValues(typeof(SurfaceType)).Length; i++)
         {
-            // RenderTextureを生成する
-            BufferTextures[i] = new RenderTexture(width, height, 0, GraphicsFormat.R8G8B8A8_UNorm);
-            // BufferTextures[i] = new RenderTexture(width, height, 0, GraphicsFormat.R16G16_SFloat);
-            // BufferTextures[i].enableRandomWrite = true;
-            BufferTextures[i].Create();
+            _bufferTextures[(int)BufferType.Density][i] = new RenderTexture(width, height, 0, GraphicsFormat.R8_UNorm);
+            _bufferTextures[(int)BufferType.Density][i].Create();
+            
+            _bufferTextures[(int)BufferType.Velocity][i] = new RenderTexture(width, height, 0, GraphicsFormat.R8G8_SNorm);
+            _bufferTextures[(int)BufferType.Velocity][i].Create();
+            
+            _bufferTextures[(int)BufferType.Divergence][i] = new RenderTexture(width, height, 0, GraphicsFormat.R8G8_SNorm);
+            _bufferTextures[(int)BufferType.Divergence][i].Create();
         }
         
-        ClearBuffer(BufferType.Front);
-        ClearBuffer(BufferType.Back);
+        ClearBuffer();
     }
 
     // デバッグ用にバッファを描画する
-    private void DrawBufferForDebug()
+    private void DrawBufferForDebug(BufferType bufferType)
     {
         var rect = new Rect(0, 0, 512, 512);
-        GUI.DrawTexture(rect, BufferTextures[(int)0], ScaleMode.ScaleToFit, false, 1);
+        GUI.DrawTexture(rect, _bufferTextures[(int)bufferType][0], ScaleMode.ScaleToFit, false, 1);
         // rect.y += 272;
         rect.x += 512;
-        GUI.DrawTexture(rect, BufferTextures[(int)1], ScaleMode.ScaleToFit, false, 1);
+        GUI.DrawTexture(rect, _bufferTextures[(int)bufferType][1], ScaleMode.ScaleToFit, false, 1);
     }
-    
     
     private void PaintByMouse()
     {
@@ -130,44 +189,83 @@ public class PaintCanvas : MonoBehaviour
         // 右クリックでバッファクリア
         if (Input.GetMouseButtonDown(1))
         {
-            ClearBuffer(BufferType.Front);
-            ClearBuffer(BufferType.Back);
+            ClearBuffer();
         }
 
-        paintedBoardMaterial.SetTexture("_DensityTex", BufferTextures[(int)destinationBuffer]);
+        // paintedBoardMaterial.SetTexture("_DensityTex", DensityTextures[(int)_densityDestination]);
+        paintedBoardMaterial.SetTexture("_DensityTex", _bufferTextures[(int)BufferType.Density][(int)_surface[(int)BufferType.Density][1]]);
     }
     
-    private void ClearBuffer(BufferType bufferType)
+    private void ClearBuffer()
     {
         var currentRT = RenderTexture.active;
-        Graphics.SetRenderTarget(BufferTextures[(int)bufferType]);
-        GL.Clear(true, true, Color.clear);
+        
+        for (var i = 0; i < _bufferTextures.Length; i++)
+        {
+            for (var j = 0; j < _bufferTextures[i].Length; j++)
+            {
+                Graphics.SetRenderTarget(_bufferTextures[i][j]);
+                GL.Clear(true, true, _clearColors[i]);
+            }
+        }
+        
         RenderTexture.active = currentRT;
     }
     
-    private void SwapBuffer()
+    private void SwapBuffer(BufferType bufferType)
     {
-        (sourceBuffer, destinationBuffer) = (destinationBuffer, sourceBuffer);
+        (_surface[(int)bufferType][0], _surface[(int)bufferType][1]) = (_surface[(int)bufferType][1], _surface[(int)bufferType][0]);
+    }
+    
+    private (RenderTexture, RenderTexture) GetBuffer(BufferType bufferType)
+    {
+        return (_bufferTextures[(int)bufferType][(int)_surface[(int)bufferType][0]], _bufferTextures[(int)bufferType][(int)_surface[(int)bufferType][1]]);
     }
     
     private void Paint(Vector2 position)
     {
+        var (src, dst) = GetBuffer(BufferType.Density);
         paintShaderMaterial.SetTexture("_StencilTex", stencilTexture);
         paintShaderMaterial.SetFloat("_Intensity", paintIntensity);
         paintShaderMaterial.SetFloat("_Radius", paintRadius);
         paintShaderMaterial.SetVector("_Center", position);
         paintShaderMaterial.SetVector("_DestinationTexelSize", stencilTexelSize);
-        Graphics.Blit(BufferTextures[(int)sourceBuffer], BufferTextures[(int)destinationBuffer], paintShaderMaterial, 0);
+        Graphics.Blit(src, dst, paintShaderMaterial, 0);
         
-        SwapBuffer();
+        SwapBuffer(BufferType.Density);
     }
     
     private void Blur()
     {
+        var (src, dst) = GetBuffer(BufferType.Density);
         paintShaderMaterial.SetTexture("_StencilTex", stencilTexture);
         paintShaderMaterial.SetVector("_DestinationTexelSize", stencilTexelSize);
-        Graphics.Blit(BufferTextures[(int)sourceBuffer], BufferTextures[(int)destinationBuffer], paintShaderMaterial, 1);
+        Graphics.Blit(src, dst, paintShaderMaterial, 1);
         
-        SwapBuffer();
+        SwapBuffer(BufferType.Density);
+    }
+
+    private void CalcVelocity()
+    {
+        var (src, dst) = GetBuffer(BufferType.Velocity);
+        var (densitySrc, _) = GetBuffer(BufferType.Density);
+        
+        paintShaderMaterial.SetTexture("_StencilTex", stencilTexture);
+        paintShaderMaterial.SetVector("_DestinationTexelSize", stencilTexelSize);
+        paintShaderMaterial.SetTexture("_DensityTex", densitySrc);
+        paintShaderMaterial.SetVector("_Gravity", gravity * Time.deltaTime);
+        Graphics.Blit(src, dst, paintShaderMaterial, 2);
+        
+        SwapBuffer(BufferType.Velocity);
+    }
+    
+    private void Advect()
+    {
+        // paintShaderMaterial.SetTexture("_StencilTex", stencilTexture);
+        // paintShaderMaterial.SetVector("_DestinationTexelSize", stencilTexelSize);
+        // var (src, dst) = GetBuffer(BufferType.Density);
+        // Graphics.Blit(DensityTextures[(int)_densitySource], DensityTextures[(int)_densityDestination], paintShaderMaterial, 2);
+        //
+        // SwapBuffer();
     }
 }

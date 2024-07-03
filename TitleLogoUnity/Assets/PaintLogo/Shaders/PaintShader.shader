@@ -69,6 +69,8 @@ Shader "Logo/PaintShader"
             ENDCG
 
         }
+
+        // Smoothing
         Pass {
             ZTest Always Cull Off ZWrite Off
             ColorMask R
@@ -118,6 +120,115 @@ Shader "Logo/PaintShader"
                 src /= 16.;
                 
                 return half4(src * stencil, 0, 0, 1);
+            }
+            ENDCG
+
+        }
+
+        // Velocity
+        Pass {
+            ZTest Always Cull Off ZWrite Off
+            ColorMask RG
+
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "UnityCG.cginc"
+
+            float4 _DestinationTexelSize;   // width, height
+            float3 _Gravity;
+            
+            sampler2D _MainTex;
+            sampler2D _StencilTex;
+            sampler2D _DensityTex;
+
+            struct appdata_t {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct v2f {
+                float4 vertex : SV_POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            v2f vert (appdata_t v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.uv;
+                return o;
+            }
+
+            // Velocityはスタッガード格子法で計算する
+            half4 frag (v2f i) : SV_Target
+            {
+                float stencil = tex2D(_StencilTex, i.uv).r;
+                float2 v = tex2D(_MainTex, i.uv).rg * 2 - 1;
+                float d = tex2D(_DensityTex, i.uv).r;
+                float dl = tex2D(_DensityTex, i.uv - float2(1,0) * _DestinationTexelSize.zw).r;
+                float dt = tex2D(_DensityTex, i.uv - float2(0,1) * _DestinationTexelSize.zw).r;
+                
+                v.x += (d + dl) * 0.5 * _Gravity.x;
+                v.y += (d + dt) * 0.5 * -_Gravity.y;
+                v = v * stencil * 0.5 + 0.5;
+                
+                return half4(v, 0, 1);
+            }
+            ENDCG
+
+        }
+
+        // Advection
+        Pass {
+            ZTest Always Cull Off ZWrite Off
+            ColorMask RG
+
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "UnityCG.cginc"
+
+            float4 _DestinationTexelSize;   // width, height
+            
+            sampler2D _MainTex;
+            sampler2D _StencilTex;
+            sampler2D _VelocityTex;
+
+            struct appdata_t {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct v2f {
+                float4 vertex : SV_POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            v2f vert (appdata_t v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.uv;
+                return o;
+            }
+
+            // Velocityはスタッガード格子法で計算する
+            half4 frag (v2f i) : SV_Target
+            {
+                float stencil = tex2D(_StencilTex, i.uv).r;
+                float d = tex2D(_MainTex, i.uv).r;
+                float dl = tex2D(_MainTex, i.uv - float2(1,0) * _DestinationTexelSize.zw).r;
+                float dr = tex2D(_MainTex, i.uv + float2(1,0) * _DestinationTexelSize.zw).r;
+                float dt = tex2D(_MainTex, i.uv - float2(0,1) * _DestinationTexelSize.zw).r;
+                float db = tex2D(_MainTex, i.uv + float2(0,1) * _DestinationTexelSize.zw).r;
+
+                float2 v = tex2D(_VelocityTex, i.uv).rg;    // 左と上の速度
+                float2 vr = tex2D(_VelocityTex, i.uv + float2(1,0) * _DestinationTexelSize.zw).rg;    // r 右の速度
+                float2 vb = tex2D(_VelocityTex, i.uv + float2(0,1) * _DestinationTexelSize.zw).rg;    // b 下の速度
+                
+                
+                return half4(v, 0, 1);
             }
             ENDCG
 

@@ -547,13 +547,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1741aec6397ae6c42a5751d04e0aaea9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stencilTexture: {fileID: 2800000, guid: 596ddd5a0d9d8c24d88b412959d10cca, type: 3}
+  stencilTexture: {fileID: 2800000, guid: b7cd3f9c31cdd2e4bb3380fd5d838120, type: 3}
   paintShader: {fileID: 4800000, guid: ddc216d7cf86ddc46aa4202a61854179, type: 3}
+  gravity: {x: 0, y: -9.8, z: 0}
   paintRadius: 100
   paintIntensity: 0.3
-  BufferTextures:
-  - {fileID: 0}
-  - {fileID: 0}
   paintedBoardMaterial: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
