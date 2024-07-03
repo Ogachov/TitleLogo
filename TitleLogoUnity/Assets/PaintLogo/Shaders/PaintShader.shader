@@ -218,17 +218,20 @@ Shader "Logo/PaintShader"
             {
                 float stencil = tex2D(_StencilTex, i.uv).r;
                 float d = tex2D(_MainTex, i.uv).r;
+                // dが0では無い場所は以後０にしないための値(=1/255) 
+                float painted = (1 - step(0, d)) * (1/255);
                 float dl = tex2D(_MainTex, i.uv - float2(1,0) * _DestinationTexelSize.zw).r;
                 float dr = tex2D(_MainTex, i.uv + float2(1,0) * _DestinationTexelSize.zw).r;
                 float dt = tex2D(_MainTex, i.uv - float2(0,1) * _DestinationTexelSize.zw).r;
                 float db = tex2D(_MainTex, i.uv + float2(0,1) * _DestinationTexelSize.zw).r;
 
-                float2 v = tex2D(_VelocityTex, i.uv).rg;    // 左と上の速度
-                float2 vr = tex2D(_VelocityTex, i.uv + float2(1,0) * _DestinationTexelSize.zw).rg;    // r 右の速度
-                float2 vb = tex2D(_VelocityTex, i.uv + float2(0,1) * _DestinationTexelSize.zw).rg;    // b 下の速度
+                float2 v = tex2D(_VelocityTex, i.uv).rg * 2 - 1;    // 左と上の速度
+                float2 vr = tex2D(_VelocityTex, i.uv + float2(1,0) * _DestinationTexelSize.zw).rg * 2 - 1;    // r 右の速度
+                float2 vb = tex2D(_VelocityTex, i.uv + float2(0,1) * _DestinationTexelSize.zw).rg * 2 - 1;    // b 下の速度
                 
+                d = saturate(d + dl * v.x - dr * vr.x + dt * v.y - db * vb.y + painted) * stencil;
                 
-                return half4(v, 0, 1);
+                return half4(d, 0, 0, 1);
             }
             ENDCG
 

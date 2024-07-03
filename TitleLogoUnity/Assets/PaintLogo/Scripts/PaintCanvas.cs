@@ -122,14 +122,16 @@ public class PaintCanvas : MonoBehaviour
         
         PaintByMouse();
         
-        // Blur();  // これはこれで面白いが。
+        Blur();  // これはこれで面白いが。
         
         CalcVelocity();
+        
+        Advect();
     }
 
     private void OnGUI()
     {
-        DrawBufferForDebug(BufferType.Velocity);
+        // DrawBufferForDebug(BufferType.Density);
     }
 
     private void CreateBufferTextures()
@@ -261,11 +263,14 @@ public class PaintCanvas : MonoBehaviour
     
     private void Advect()
     {
-        // paintShaderMaterial.SetTexture("_StencilTex", stencilTexture);
-        // paintShaderMaterial.SetVector("_DestinationTexelSize", stencilTexelSize);
-        // var (src, dst) = GetBuffer(BufferType.Density);
-        // Graphics.Blit(DensityTextures[(int)_densitySource], DensityTextures[(int)_densityDestination], paintShaderMaterial, 2);
-        //
-        // SwapBuffer();
+        var (src, dst) = GetBuffer(BufferType.Density);
+        var (velocitySrc, _) = GetBuffer(BufferType.Velocity);
+        
+        paintShaderMaterial.SetTexture("_StencilTex", stencilTexture);
+        paintShaderMaterial.SetVector("_DestinationTexelSize", stencilTexelSize);
+        paintShaderMaterial.SetTexture("_VelocityTex", velocitySrc);
+        Graphics.Blit(src, dst, paintShaderMaterial, 3);
+        
+        SwapBuffer(BufferType.Density);
     }
 }
