@@ -122,7 +122,7 @@ public class PaintCanvas : MonoBehaviour
         
         PaintByMouse();
         
-        Blur();  // これはこれで面白いが。
+        // Blur();  // これはこれで面白いが。
         
         CalcVelocity();
         
@@ -131,7 +131,7 @@ public class PaintCanvas : MonoBehaviour
 
     private void OnGUI()
     {
-        // DrawBufferForDebug(BufferType.Density);
+        DrawBufferForDebug();
     }
 
     private void CreateBufferTextures()
@@ -149,10 +149,12 @@ public class PaintCanvas : MonoBehaviour
         
         for (var i = 0; i < Enum.GetValues(typeof(SurfaceType)).Length; i++)
         {
-            _bufferTextures[(int)BufferType.Density][i] = new RenderTexture(width, height, 0, GraphicsFormat.R8_UNorm);
+            // _bufferTextures[(int)BufferType.Density][i] = new RenderTexture(width, height, 0, GraphicsFormat.R8_UNorm);
+            _bufferTextures[(int)BufferType.Density][i] = new RenderTexture(width, height, 0, GraphicsFormat.R16_SFloat);
             _bufferTextures[(int)BufferType.Density][i].Create();
             
-            _bufferTextures[(int)BufferType.Velocity][i] = new RenderTexture(width, height, 0, GraphicsFormat.R8G8_SNorm);
+            
+            _bufferTextures[(int)BufferType.Velocity][i] = new RenderTexture(width, height, 0, GraphicsFormat.R8G8_UNorm);
             _bufferTextures[(int)BufferType.Velocity][i].Create();
             
             _bufferTextures[(int)BufferType.Divergence][i] = new RenderTexture(width, height, 0, GraphicsFormat.R8G8_SNorm);
@@ -163,13 +165,16 @@ public class PaintCanvas : MonoBehaviour
     }
 
     // デバッグ用にバッファを描画する
-    private void DrawBufferForDebug(BufferType bufferType)
+    private void DrawBufferForDebug()
     {
+        // スクリーン左上
         var rect = new Rect(0, 0, 512, 512);
-        GUI.DrawTexture(rect, _bufferTextures[(int)bufferType][0], ScaleMode.ScaleToFit, false, 1);
-        // rect.y += 272;
-        rect.x += 512;
-        GUI.DrawTexture(rect, _bufferTextures[(int)bufferType][1], ScaleMode.ScaleToFit, false, 1);
+        GUI.DrawTexture(rect, _bufferTextures[(int)BufferType.Density][(int)_surface[(int)BufferType.Density][0]], ScaleMode.ScaleToFit, false, 1);
+
+        // スクリーン右上
+        var w = Screen.width - 512;
+        rect = new Rect(w, 0, 512, 512);
+        GUI.DrawTexture(rect, _bufferTextures[(int)BufferType.Velocity][(int)_surface[(int)BufferType.Velocity][0]], ScaleMode.ScaleToFit, false, 1);
     }
     
     private void PaintByMouse()

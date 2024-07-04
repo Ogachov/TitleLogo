@@ -549,9 +549,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stencilTexture: {fileID: 2800000, guid: b7cd3f9c31cdd2e4bb3380fd5d838120, type: 3}
   paintShader: {fileID: 4800000, guid: ddc216d7cf86ddc46aa4202a61854179, type: 3}
-  gravity: {x: 0, y: -9.8, z: 0}
+  gravity: {x: 0, y: 6, z: 0}
   paintRadius: 100
-  paintIntensity: 0.3
+  paintIntensity: 0.04
   paintedBoardMaterial: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

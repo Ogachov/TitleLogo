@@ -42,7 +42,8 @@ Shader "Logo/PaintShader"
 
             float noise(float2 p)
             {
-                return hash(p.x + p.y * 57.0);
+                // return hash(p.x + p.y * 57.0);
+                return frac(sin(dot(p.xy, float2(12.9898, 78.233))) * 43758.5453);
             }
 
             v2f vert (appdata_t v)
@@ -56,7 +57,7 @@ Shader "Logo/PaintShader"
             half4 frag (v2f i) : SV_Target
             {
                 float n = noise(i.uv * _Time.y);
-                float stencil = tex2D(_StencilTex, i.uv).r * step(0.99, n);
+                float stencil = tex2D(_StencilTex, i.uv).r * step(0.995, n);
                 float src = tex2D(_MainTex, i.uv).r;
                 
                 float2 center = _Center * _DestinationTexelSize;
@@ -165,15 +166,17 @@ Shader "Logo/PaintShader"
             {
                 float stencil = tex2D(_StencilTex, i.uv).r;
                 float2 v = tex2D(_MainTex, i.uv).rg * 2 - 1;
+                v *= 0.95;
                 float d = tex2D(_DensityTex, i.uv).r;
                 float dl = tex2D(_DensityTex, i.uv - float2(1,0) * _DestinationTexelSize.zw).r;
                 float dt = tex2D(_DensityTex, i.uv - float2(0,1) * _DestinationTexelSize.zw).r;
                 
                 v.x += (d + dl) * 0.5 * _Gravity.x;
                 v.y += (d + dt) * 0.5 * -_Gravity.y;
-                v = v * stencil * 0.5 + 0.5;
+                v = saturate(v * stencil * 0.5 + 0.5);
                 
                 return half4(v, 0, 1);
+                // return half4(0.5, 0.5, 0, 1);
             }
             ENDCG
 
@@ -220,6 +223,7 @@ Shader "Logo/PaintShader"
                 float d = tex2D(_MainTex, i.uv).r;
                 // dが0では無い場所は以後０にしないための値(=1/255) 
                 float painted = (1 - step(0, d)) * (1/255);
+                // float painted = d > 0 ? 1/255.0 : 0;
                 float dl = tex2D(_MainTex, i.uv - float2(1,0) * _DestinationTexelSize.zw).r;
                 float dr = tex2D(_MainTex, i.uv + float2(1,0) * _DestinationTexelSize.zw).r;
                 float dt = tex2D(_MainTex, i.uv - float2(0,1) * _DestinationTexelSize.zw).r;
@@ -229,7 +233,7 @@ Shader "Logo/PaintShader"
                 float2 vr = tex2D(_VelocityTex, i.uv + float2(1,0) * _DestinationTexelSize.zw).rg * 2 - 1;    // r 右の速度
                 float2 vb = tex2D(_VelocityTex, i.uv + float2(0,1) * _DestinationTexelSize.zw).rg * 2 - 1;    // b 下の速度
                 
-                d = saturate(d + dl * v.x - dr * vr.x + dt * v.y - db * vb.y + painted) * stencil;
+                d = saturate(saturate(d + dl * v.x - dr * vr.x + dt * v.y - db * vb.y) + painted) * stencil;
                 
                 return half4(d, 0, 0, 1);
             }
