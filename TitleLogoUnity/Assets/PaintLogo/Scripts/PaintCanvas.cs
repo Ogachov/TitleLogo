@@ -122,7 +122,7 @@ public class PaintCanvas : MonoBehaviour
         
         PaintByMouse();
         
-        // Blur();  // これはこれで面白いが。
+        Blur();  // これはこれで面白いが。
         
         CalcVelocity();
         
@@ -131,7 +131,7 @@ public class PaintCanvas : MonoBehaviour
 
     private void OnGUI()
     {
-        DrawBufferForDebug();
+        // DrawBufferForDebug();
     }
 
     private void CreateBufferTextures()
@@ -150,9 +150,8 @@ public class PaintCanvas : MonoBehaviour
         for (var i = 0; i < Enum.GetValues(typeof(SurfaceType)).Length; i++)
         {
             // _bufferTextures[(int)BufferType.Density][i] = new RenderTexture(width, height, 0, GraphicsFormat.R8_UNorm);
-            _bufferTextures[(int)BufferType.Density][i] = new RenderTexture(width, height, 0, GraphicsFormat.R16_SFloat);
+            _bufferTextures[(int)BufferType.Density][i] = new RenderTexture(width, height, 0, GraphicsFormat.R16G16_SFloat);
             _bufferTextures[(int)BufferType.Density][i].Create();
-            
             
             _bufferTextures[(int)BufferType.Velocity][i] = new RenderTexture(width, height, 0, GraphicsFormat.R8G8_UNorm);
             _bufferTextures[(int)BufferType.Velocity][i].Create();

@@ -239,6 +239,198 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 153.2, y: 46.1, z: 0}
+--- !u!1 &774056833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 774056835}
+  - component: {fileID: 774056834}
+  m_Layer: 0
+  m_Name: Spline
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &774056834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 774056833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dab5c7d4c32e743048dfca98e2d5914f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Spline:
+    m_EditModeType: 1
+    m_Knots: []
+    m_MetaData: []
+    m_Closed: 0
+    m_IntData:
+      m_Data: []
+    m_FloatData:
+      m_Data: []
+    m_Float4Data:
+      m_Data: []
+    m_ObjectData:
+      m_Data: []
+  m_Splines:
+  - m_EditModeType: 1
+    m_Knots:
+    - Position:
+        x: 0
+        y: 0
+        z: 0
+      TangentIn:
+        x: 0
+        y: 0
+        z: -0.38549995
+      TangentOut:
+        x: 0
+        y: 0
+        z: 0.38549995
+      Rotation:
+        value:
+          x: -0.54839253
+          y: 0.4463917
+          z: -0.44639173
+          w: 0.5483926
+    - Position:
+        x: 0.5747992
+        y: 0.279149
+        z: 0.00000023841858
+      TangentIn:
+        x: -0
+        y: -0
+        z: -0.1619798
+      TangentOut:
+        x: 0
+        y: 0
+        z: 0.117804244
+      Rotation:
+        value:
+          x: 0.5020294
+          y: -0.49796224
+          z: 0.49796245
+          w: -0.5020295
+    - Position:
+        x: 0.88119084
+        y: 0.13646346
+        z: 0.00000023841858
+      TangentIn:
+        x: -0
+        y: -0
+        z: -0.09678475
+      TangentOut:
+        x: 0
+        y: 0
+        z: 0.10437437
+      Rotation:
+        value:
+          x: -0.18840642
+          y: 0.6815447
+          z: -0.6815445
+          w: 0.18840627
+    - Position:
+        x: 0.85913235
+        y: -0.25599036
+        z: 0
+      TangentIn:
+        x: -0
+        y: -0
+        z: -0.0954484
+      TangentOut:
+        x: 0
+        y: 0
+        z: 0.105834134
+      Rotation:
+        value:
+          x: 0.2953088
+          y: 0.6424895
+          z: -0.6424894
+          w: -0.2953089
+    - Position:
+        x: 0.37810832
+        y: -0.20947716
+        z: 0.00000023841858
+      TangentIn:
+        x: -0
+        y: -0
+        z: -0.14763932
+      TangentOut:
+        x: 0
+        y: 0
+        z: 0.12884903
+      Rotation:
+        value:
+          x: -0.4779335
+          y: -0.52113307
+          z: 0.521133
+          w: 0.47793332
+    - Position:
+        x: 0.02328682
+        y: -0.30738997
+        z: 0
+      TangentIn:
+        x: -0
+        y: -0
+        z: -0.036808316
+      TangentOut:
+        x: 0
+        y: 0
+        z: 0.036808316
+      Rotation:
+        value:
+          x: -0.092937775
+          y: 0.70097286
+          z: -0.096874535
+          w: -0.70043916
+    m_MetaData:
+    - Mode: 2
+      Tension: 0.5
+    - Mode: 0
+      Tension: 0.5
+    - Mode: 0
+      Tension: 0.5
+    - Mode: 0
+      Tension: 0.5
+    - Mode: 0
+      Tension: 0.5
+    - Mode: 0
+      Tension: 0.5
+    m_Closed: 0
+    m_IntData:
+      m_Data: []
+    m_FloatData:
+      m_Data: []
+    m_Float4Data:
+      m_Data: []
+    m_ObjectData:
+      m_Data: []
+  m_Knots:
+    m_KnotsLink: []
+--- !u!4 &774056835
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 774056833}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.321768, y: 0.13832343, z: -1.6196291}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &961739749
 GameObject:
   m_ObjectHideFlags: 0
@@ -425,6 +617,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1315374474
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1315374476}
+  - component: {fileID: 1315374475}
+  m_Layer: 0
+  m_Name: Robot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1315374475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315374474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f3ba022f616b354cbba24beccbce089, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1315374476
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315374474}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.922, y: 0, z: -2.015}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1733838824
 GameObject:
   m_ObjectHideFlags: 0
@@ -444,7 +680,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1733838825
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -547,11 +783,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1741aec6397ae6c42a5751d04e0aaea9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stencilTexture: {fileID: 2800000, guid: b7cd3f9c31cdd2e4bb3380fd5d838120, type: 3}
+  stencilTexture: {fileID: 2800000, guid: 596ddd5a0d9d8c24d88b412959d10cca, type: 3}
   paintShader: {fileID: 4800000, guid: ddc216d7cf86ddc46aa4202a61854179, type: 3}
-  gravity: {x: 0, y: 6, z: 0}
+  gravity: {x: 0, y: 9.83, z: 0}
   paintRadius: 100
-  paintIntensity: 0.04
+  paintIntensity: 0.12
   paintedBoardMaterial: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -561,3 +797,5 @@ SceneRoots:
   - {fileID: 203844589}
   - {fileID: 1160234427}
   - {fileID: 1733838828}
+  - {fileID: 774056835}
+  - {fileID: 1315374476}
