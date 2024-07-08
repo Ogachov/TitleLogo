@@ -127,6 +127,8 @@ public class PaintCanvas : MonoBehaviour
         CalcVelocity();
         
         Advect();
+        
+        paintedBoardMaterial.SetTexture("_DensityTex", _bufferTextures[(int)BufferType.Density][(int)_surface[(int)BufferType.Density][0]]);
     }
 
     private void OnGUI()
@@ -197,9 +199,6 @@ public class PaintCanvas : MonoBehaviour
         {
             ClearBuffer();
         }
-
-        // paintedBoardMaterial.SetTexture("_DensityTex", DensityTextures[(int)_densityDestination]);
-        paintedBoardMaterial.SetTexture("_DensityTex", _bufferTextures[(int)BufferType.Density][(int)_surface[(int)BufferType.Density][1]]);
     }
     
     private void ClearBuffer()

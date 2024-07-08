@@ -120,11 +120,11 @@ Shader "Logo/PaintShader"
                 // src += tex2D(_MainTex, i.uv + float2(-1, 1) * _DestinationTexelSize.zw).r;
                 // src /= 16.;
                 float src = tex2D(_MainTex, i.uv).r;
-                src += tex2D(_MainTex, i.uv + float2(0, 1) * _DestinationTexelSize.zw).r * 0.5;
-                src += tex2D(_MainTex, i.uv + float2(0, -1) * _DestinationTexelSize.zw).r * 0.5;
-                src += tex2D(_MainTex, i.uv + float2(1, 0) * _DestinationTexelSize.zw).r * 0.5;
-                src += tex2D(_MainTex, i.uv + float2(-1, 0) * _DestinationTexelSize.zw).r * 0.5;
-                src /= 3.0;
+                src += tex2D(_MainTex, i.uv + float2(0, 1) * _DestinationTexelSize.zw).r * 0.25;
+                src += tex2D(_MainTex, i.uv + float2(0, -1) * _DestinationTexelSize.zw).r * 0.25;
+                src += tex2D(_MainTex, i.uv + float2(1, 0) * _DestinationTexelSize.zw).r * 0.25;
+                src += tex2D(_MainTex, i.uv + float2(-1, 0) * _DestinationTexelSize.zw).r * 0.25;
+                src /= 2.0;
                 
                 return half4(src * stencil, 0, 0, 1);
             }
